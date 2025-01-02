@@ -128,7 +128,61 @@ impl Graph {
         assert!(u < self.len() && v < self.len(), "Vertex index out of range");
         self.adjacency_list[u].contains(&v)
     }
+
+    /// Removes the edge from `u` to `v`.
+    /// If the graph is undirected, it also removes the edge from `v` to `u`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `u` or `v` are out of bounds (>= the number of vertices).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use graph_vec::{Graph, GraphType};
+    ///
+    /// // Create a directed graph
+    /// let mut g_directed = Graph::new(3, GraphType::Directed);
+    /// g_directed.add_edge(0, 1);
+    /// g_directed.add_edge(1, 2);
+    /// // 0 -> 1 -> 2
+    /// g_directed.remove_edge(0, 1);
+    /// // 0    1 -> 2
+    /// assert_eq!(g_directed.neighbors(0), &[]);
+    /// assert_eq!(g_directed.neighbors(1), &[2]);
+    /// assert_eq!(g_directed.neighbors(2), &[]);
+    ///
+    /// // Create an undirected graph
+    /// let mut g_undirected = Graph::new(3, GraphType::Undirected);
+    /// g_undirected.add_edge(0, 1);
+    /// g_undirected.add_edge(1, 2);
+    /// // 0 -- 1 -- 2
+    /// g_undirected.remove_edge(0, 1);
+    /// // 0    1 -- 2
+    /// assert_eq!(g_undirected.neighbors(0), &[]);
+    /// assert_eq!(g_undirected.neighbors(1), &[2, ]);
+    /// assert_eq!(g_undirected.neighbors(2), &[1, ]);
+    pub fn remove_edge(&mut self, u: usize, v: usize) {
+        assert!(u < self.len() && v < self.len(), "Vertex index out of range");
+
+        // Remove v from u's adjacency list
+        if let Some(idx) = self.adjacency_list[u]
+            .iter()
+            .position(|&x| x == v) {
+            self.adjacency_list[u].swap_remove(idx);
+        }
+
+        // If undirected, remove also u from v's adjacency list
+        if self.graph_type == GraphType::Undirected {
+            if let Some(idx) = self.adjacency_list[v]
+                .iter()
+                .position(|&x| x == u) {
+                self.adjacency_list[v].swap_remove(idx);
+            }
+        }
+    }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
