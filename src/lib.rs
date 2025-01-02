@@ -104,6 +104,30 @@ impl Graph {
         assert!(u < self.len(), "Vertex index out of range");
         &self.adjacency_list[u]
     }
+
+    /// Returns true if there is an edge from `u` to `v`.
+    /// In an undirected graph, this also implies `v to `u`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `u` or `v` are out of bounds (>= the number of vertices).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use graph_vec::{Graph, GraphType};
+    /// let mut g = Graph::new(3, GraphType::Directed);
+    /// g.add_edge(0, 1);
+    /// g.add_edge(1, 2);
+    /// // 0 -> 1 -> 2
+    /// assert!(g.has_edge(0, 1));
+    /// assert!(!g.has_edge(1, 0));
+    /// assert!(g.has_edge(1, 2));
+    /// ```
+    pub fn has_edge(&self, u: usize, v: usize) -> bool {
+        assert!(u < self.len() && v < self.len(), "Vertex index out of range");
+        self.adjacency_list[u].contains(&v)
+    }
 }
 #[cfg(test)]
 mod tests {
