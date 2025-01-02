@@ -181,6 +181,43 @@ impl Graph {
             }
         }
     }
+
+    /// Returns the degree of vertex `u` in an undirected graph.
+    /// For a directed graph, returns the `out_degree`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `u` is out of bounds (>= the number of vertices).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use graph_vec::{Graph, GraphType};
+    /// // Create an undirected graph
+    /// let mut g_undirected = Graph::new(4, GraphType::Undirected);
+    /// g_undirected.add_edge(0, 1);
+    /// g_undirected.add_edge(1, 2);
+    /// // 0 -- 1 -- 2   3
+    /// assert_eq!(g_undirected.degree(0), 1);
+    /// assert_eq!(g_undirected.degree(1), 2);
+    /// assert_eq!(g_undirected.degree(3), 0);
+    /// ```
+    ///
+    /// ```
+    /// use graph_vec::{Graph, GraphType};
+    /// // Create a directed graph
+    /// let mut g_directed = Graph::new(3, GraphType::Directed);
+    /// g_directed.add_edge(0, 1);
+    /// g_directed.add_edge(2, 1);
+    /// // 0 -> 1 <- 2
+    /// assert_eq!(g_directed.degree(0), 1);
+    /// assert_eq!(g_directed.degree(1), 0);
+    /// assert_eq!(g_directed.degree(2), 1);
+    /// ```
+    pub fn degree(&self, u: usize) -> usize {
+        assert!(u < self.len(), "Vertex index out of range");
+        self.adjacency_list[u].len()
+    }
 }
 
 #[cfg(test)]
