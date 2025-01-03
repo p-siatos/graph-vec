@@ -71,7 +71,10 @@ impl Graph {
     /// ```
     pub fn add_edge(&mut self, u: usize, v: usize) {
         // Validate indices (optional, depending on how you handle errors)
-        assert!(u < self.len() && v < self.len(), "Vertex index out of range");
+        assert!(
+            u < self.len() && v < self.len(),
+            "Vertex index out of range"
+        );
 
         // Always add v to u's adjacency list
         self.adjacency_list[u].push(v);
@@ -125,7 +128,10 @@ impl Graph {
     /// assert!(g.has_edge(1, 2));
     /// ```
     pub fn has_edge(&self, u: usize, v: usize) -> bool {
-        assert!(u < self.len() && v < self.len(), "Vertex index out of range");
+        assert!(
+            u < self.len() && v < self.len(),
+            "Vertex index out of range"
+        );
         self.adjacency_list[u].contains(&v)
     }
 
@@ -163,20 +169,19 @@ impl Graph {
     /// assert_eq!(g_undirected.neighbors(1), &[2, ]);
     /// assert_eq!(g_undirected.neighbors(2), &[1, ]);
     pub fn remove_edge(&mut self, u: usize, v: usize) {
-        assert!(u < self.len() && v < self.len(), "Vertex index out of range");
+        assert!(
+            u < self.len() && v < self.len(),
+            "Vertex index out of range"
+        );
 
         // Remove v from u's adjacency list
-        if let Some(idx) = self.adjacency_list[u]
-            .iter()
-            .position(|&x| x == v) {
+        if let Some(idx) = self.adjacency_list[u].iter().position(|&x| x == v) {
             self.adjacency_list[u].swap_remove(idx);
         }
 
         // If undirected, remove also u from v's adjacency list
         if self.graph_type == GraphType::Undirected {
-            if let Some(idx) = self.adjacency_list[v]
-                .iter()
-                .position(|&x| x == u) {
+            if let Some(idx) = self.adjacency_list[v].iter().position(|&x| x == u) {
                 self.adjacency_list[v].swap_remove(idx);
             }
         }
